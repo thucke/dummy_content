@@ -3,12 +3,14 @@ declare(strict_types=1);
 
 namespace Colorcube\DummyContent\Form;
 
-
 use TYPO3\CMS\Backend\Form\AbstractNode;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Routing\SiteMatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Domain\ConsumableString;
 
 /**
  * Dummy Content dummy text wizard
@@ -31,6 +33,7 @@ class DummyContentWizard extends AbstractNode
         $itemName = $parameterArray['itemFormElName'];
         $isRTE = (bool)($parameterArray['fieldConf']['config']['enableRichtext'] ?? false);
 
+        $dcwEventListenerJS = "";
         $html = [];
         $html[] = '<div class="help-block">';
         $html[] = htmlspecialchars($languageService->sL('LLL:EXT:dummy_content/Resources/Private/Language/Labels.xlf:dummyText')) . ' ';
@@ -41,29 +44,65 @@ class DummyContentWizard extends AbstractNode
             $action['html'] = $isRTE;
             $lang = $this->getRecordLanguage($this->data);
             // is this the right way to get an instance with requirejs?
-            $loremIpsum = "var LoremIpsumObj = require('TYPO3/CMS/DummyContent/LoremIpsum'); var loremIpsum = new LoremIpsumObj(" . json_encode($action) . ", " . json_encode($lang) . "); ";
+            $loremIpsum = "var loremIpsum = LoremIpsum(" . json_encode($action) . ", " . json_encode($lang) . "); ";
+            $dcwId = uniqid('dcw_');
+            $actionDcwEventListener = "";
 
             if ($isRTE) {
-                $itemNameRTE = $this->sanitizeFieldId($itemName);
-                //  CKEDITOR.instances.data_tt_content__7__header_.insertText("Magical ponies await!")
-                $onChange = $loremIpsum . 'CKEDITOR.instances.' . $itemNameRTE . '.setData(loremIpsum.generate()); CKEDITOR.instances.' . $itemNameRTE . '.resetDirty(); this.blur(); return false;';
+                $itemName = $this->sanitizeFieldId($itemName);
+                $eventListenerHandlerName = "eventListenerRteHandler";
             } else {
-                $onChange = $loremIpsum . 'var el = document.querySelectorAll(' . GeneralUtility::quoteJSvalue('[data-formengine-input-name="' . $itemName . '"]') . ')[0]; '.
-                    'el.value=loremIpsum.generate(); '.
-                    "el.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));".
-                    'this.blur(); return false;';
+                $eventListenerHandlerName = "eventListenerHandler";
             }
+            $actionDcwEventListener = "document.getElementById('" . $dcwId . "').addEventListener('click', function() {";
+            $actionDcwEventListener .= "var itemname = this.attributes['data-target'].value;";
+            $actionDcwEventListener .= $eventListenerHandlerName . "(itemname, '" . json_encode($action) . "', " . json_encode($lang) . ");});";
 
-            $html[] = '<button type="button" class="btn btn-info"  onclick="' . htmlspecialchars($onChange) . '">' . htmlspecialchars($title) . '</button>';
+            // every button gets its own unique id (dcw -> "Dummy Content Wizard")
+            $html[] = '<button id="' . $dcwId . '" type="button" class="btn btn-info" data-target="' . $itemName . '">' . htmlspecialchars($title) . '</button>';
+
+            $dcwEventListenerJS .= $actionDcwEventListener;
         }
         $html[] = '</div>';
 
         $result['html'] = implode(LF, $html);
 
-        $result['requireJsModules'] = ['TYPO3/CMS/DummyContent/LoremIpsum'];
+        $result['javaScriptModules'][] =
+            JavaScriptModuleInstruction::create('@colorcube/dummy_content/LoremIpsum.js');
+
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\AssetCollector::class)
+            ->addInlineJavaScript ('dcwEventListenerJS_' . uniqid('dcwjs_'), $dcwEventListenerJS, [ 'nonce' => $this->getNonceAttribute(), 'data-dcw' => $dcwId ]);
+
         return $result;
     }
 
+
+    /**
+     * Returns a the request object of the current context
+     *
+     * @return ServerRequestInterface
+     */
+    private function getRequest(): ServerRequestInterface
+    {
+        return $GLOBALS['TYPO3_REQUEST'];
+    }
+
+    /**
+     * Returns a new nonce attribute value
+     *
+     * @return ConsumableString
+     */
+    protected function getNonceAttribute()
+    {
+        $request = $this->getRequest();
+        $nonce = "";
+        $nonceAttribute = $request->getAttribute('nonce');
+        if ($nonceAttribute instanceof ConsumableString) {
+            return $nonceAttribute;
+        } else {
+            return $nonceAttribute;
+        }
+    }
 
     /**
      * Returns language iso 2 code for record
@@ -76,17 +115,9 @@ class DummyContentWizard extends AbstractNode
     protected function getRecordLanguage($data)
     {
         try {
-            if (class_exists("\TYPO3\CMS\Core\Routing\SiteMatcher")) {
-                // TYPO3 9.x
-                $site = GeneralUtility::makeInstance(SiteMatcher::class)->matchByPageId((int)$data['databaseRow']['pid']);
-                $siteLanguage = $site->getLanguageById((int)($data['databaseRow']['sys_language_uid'][0] ?? 0));
-                return $siteLanguage->getTwoLetterIsoCode() ?? 'en';
-            } else {
-                // TYPO3 8.x
-                // this doesn't work for sys_language_uid = 0  :-( returns DEF
-                $lang = $this->data['systemLanguageRows'][$data['databaseRow']['sys_language_uid'][0]]['iso'];
-                return ($lang == 'DEF') ? 'en' : $lang;
-            }
+            $site = GeneralUtility::makeInstance(SiteMatcher::class)->matchByPageId((int)$data['databaseRow']['pid']);
+            $siteLanguage = $site->getLanguageById((int)($data['databaseRow']['sys_language_uid'][0] ?? 0));
+            return $siteLanguage->getLocale()->getLanguageCode() ?? 'en';
         } catch (\Exception $e) {
         }
         return 'en';
