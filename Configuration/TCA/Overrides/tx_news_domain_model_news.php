@@ -1,5 +1,7 @@
 <?php
 
+defined('TYPO3') or die();
+
 (static function () {
 
     if (isset($GLOBALS['TCA']['tx_news_domain_model_news'])) {
