@@ -30,7 +30,11 @@ jobs:
 
       - name: Get version
         id: get-version
-        run: echo "version=${GITHUB_REF/refs\/tags\//}" | sed -r 's/^v(.*)/\1/' >> $GITHUB_ENV
+        run: |
+          version=${GITHUB_REF/refs\/tags\//}"
+          # strip possibly trailing "v" from version
+          version=${echo $version | sed -r 's/^v(.*)/\1/'}          
+          echo "version=${version}" >> $GITHUB_ENV
 
       #- name: Fetch release details from current repository
       #  id: get_latest_release
