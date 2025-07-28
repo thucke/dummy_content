@@ -32,27 +32,27 @@ jobs:
         id: get-version
         run: echo "version=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
 
-      - name: Fetch release details from current repository
-        id: get_latest_release
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/${{ github.repository }}/releases/tags/${{ steps.get-version.outputs.version }}
-          owner: thucke
-          repo: dummy_content
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Fetch release details from current repository
+      #  id: get_latest_release
+      #  uses: octokit/request-action@v2.x
+      #  with:
+      #    route: GET /repos/${{ github.repository }}/releases/tags/${{ steps.get-version.outputs.version }}
+      #    owner: thucke
+      #    repo: dummy_content
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       #see: https://trstringer.com/github-actions-multiline-strings/
       #substituting the %, \n, and \r characters
-      - name: Store release body
-        id: set-release-body
-        run: |
-          RELEASE_BODY="${RELEASE_BODY//'%'/'%25'}"
-          RELEASE_BODY="${RELEASE_BODY//$'\n'/'%0A'}"
-          RELEASE_BODY="${RELEASE_BODY//$'\r'/'%0D'}"
-          echo ::set-output name=release_body::"$RELEASE_BODY"
-        env:
-          RELEASE_BODY: ${{ fromJson(steps.get_latest_release.outputs.data).body }}
+      #- name: Store release body
+      #  id: set-release-body
+      #  run: |
+      #    RELEASE_BODY="${RELEASE_BODY//'%'/'%25'}"
+      #    RELEASE_BODY="${RELEASE_BODY//$'\n'/'%0A'}"
+      #    RELEASE_BODY="${RELEASE_BODY//$'\r'/'%0D'}"
+      #    echo ::set-output name=release_body::"$RELEASE_BODY"
+      #  env:
+      #    RELEASE_BODY: ${{ fromJson(steps.get_latest_release.outputs.data).body }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
