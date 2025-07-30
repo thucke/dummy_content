@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check tag
         run: |
@@ -34,27 +34,27 @@ jobs:
           # strip possibly trailing "v" from version
           echo "version=$(echo ${GITHUB_REF/refs\/tags\//} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
 
-      #- name: Fetch release details from current repository
-      #  id: get_latest_release
-      #  uses: octokit/request-action@v2.x
-      #  with:
-      #    route: GET /repos/${{ github.repository }}/releases/tags/${{ steps.get-version.outputs.version }}
-      #    owner: thucke
-      #    repo: dummy_content
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fetch release details from current repository
+        id: get_latest_release
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/${{ github.repository }}/releases/tags/${{ steps.get-version.outputs.version }}
+          owner: thucke
+          repo: dummy_content
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       #see: https://trstringer.com/github-actions-multiline-strings/
       #substituting the %, \n, and \r characters
-      #- name: Store release body
-      #  id: set-release-body
-      #  run: |
-      #    RELEASE_BODY="${RELEASE_BODY//'%'/'%25'}"
-      #    RELEASE_BODY="${RELEASE_BODY//$'\n'/'%0A'}"
-      #    RELEASE_BODY="${RELEASE_BODY//$'\r'/'%0D'}"
-      #    echo ::set-output name=release_body::"$RELEASE_BODY"
-      #  env:
-      #    RELEASE_BODY: ${{ fromJson(steps.get_latest_release.outputs.data).body }}
+      - name: Store release body
+        id: set-release-body
+        run: |
+          RELEASE_BODY="${RELEASE_BODY//'%'/'%25'}"
+          RELEASE_BODY="${RELEASE_BODY//$'\n'/'%0A'}"
+          RELEASE_BODY="${RELEASE_BODY//$'\r'/'%0D'}"
+          echo ::set-output name=release_body::"$RELEASE_BODY"
+        env:
+          RELEASE_BODY: ${{ fromJson(steps.get_latest_release.outputs.data).body }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -80,13 +80,13 @@ jobs:
     steps:
       # Check statuses of Github
       - name: Check GitHub Pages status
-        uses: crazy-max/ghaction-github-status@v2
+        uses: crazy-max/ghaction-github-status@v4
         with:
           pages_threshold: major_outage
 
       - name: Checkout Code
         if: success()
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v4
         with:
           path: source
 
@@ -102,7 +102,7 @@ jobs:
 
       - name: Deploy Doxygen
         if: success()
-        uses: peaceiris/actions-gh-pages@v3.8.0
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: target/html
