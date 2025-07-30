@@ -30,9 +30,7 @@ jobs:
 
       - name: Get version
         id: get-version
-        run: |
-          # strip possibly trailing "v" from version
-          echo "version=$(echo ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
+        run: echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
 
       - name: Fetch release details from current repository
         id: get_latest_release
@@ -66,6 +64,7 @@ jobs:
 
       - name: Set extension version
         run: |
+          # strip possibly trailing "v" from version
           t3version=$(echo ${GITHUB_REF/refs\/tags\//} | sed -r 's/^v(.*)/\1/')
           php ~/.composer/vendor/bin/tailor set-version ${{ env.t3version }}
 
