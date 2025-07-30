@@ -32,15 +32,13 @@ jobs:
         id: get-version
         run: |
           # strip possibly trailing "v" from version
-          echo "version=$(echo ${GITHUB_REF/refs\/tags\//} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
+          echo "version=$(echo ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
 
       - name: Fetch release details from current repository
         id: get_latest_release
         uses: octokit/request-action@v2.x
         with:
           route: GET /repos/${{ github.repository }}/releases/tags/${{ steps.get-version.outputs.version }}
-          owner: thucke
-          repo: dummy_content
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -67,7 +65,9 @@ jobs:
         run: composer global require typo3/tailor --prefer-dist --no-progress --no-suggest
 
       - name: Set extension version
-        run: php ~/.composer/vendor/bin/tailor set-version ${{ env.version }}
+        run: |
+          t3version=$(echo ${GITHUB_REF/refs\/tags\//} | sed -r 's/^v(.*)/\1/')
+          php ~/.composer/vendor/bin/tailor set-version ${{ env.t3version }}
 
       - name: Publish to TER
         run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${{ steps.set-release-body.outputs.release_body}}" ${{ env.version }}
