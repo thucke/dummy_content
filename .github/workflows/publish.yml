@@ -48,7 +48,7 @@ jobs:
           RELEASE_BODY="${RELEASE_BODY//'%'/'%25'}"
           RELEASE_BODY="${RELEASE_BODY//$'\n'/'%0A'}"
           RELEASE_BODY="${RELEASE_BODY//$'\r'/'%0D'}"
-          echo ::set-output name=release_body::"$RELEASE_BODY"
+          echo "release_body=${RELEASE_BODY}" >> $GITHUB_ENV
         env:
           RELEASE_BODY: ${{ fromJson(steps.get_latest_release.outputs.data).body }}
 
@@ -69,7 +69,7 @@ jobs:
           php ~/.composer/vendor/bin/tailor set-version ${t3version}
 
       - name: Publish to TER
-        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${{ steps.set-release-body.outputs.release_body}}" ${{ env.version }}
+        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${release_body}" ${{ env.version }}
 
   doxygen:
     name: Update Doxygen content on Github pages
