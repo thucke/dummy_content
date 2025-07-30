@@ -30,7 +30,11 @@ jobs:
 
       - name: Get version
         id: get-version
-        run: echo "version=$(echo ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
+        run: |
+          echo "version=$(echo ${GITHUB_REF/refs\/tags\//})" >> $GITHUB_ENV
+          # strip possibly trailing "v" from version
+          echo "t3version=$(echo ${version} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
+
 
       - name: Fetch release details from current repository
         id: get_latest_release
@@ -63,13 +67,10 @@ jobs:
         run: composer global require typo3/tailor --prefer-dist --no-progress --no-suggest
 
       - name: Set extension version
-        run: |
-          # strip possibly trailing "v" from version
-          t3version=$(echo ${version} | sed -r 's/^v(.*)/\1/')
-          php ~/.composer/vendor/bin/tailor set-version ${t3version}
+        run: php ~/.composer/vendor/bin/tailor set-version ${{ env.t3version }}
 
       - name: Publish to TER
-        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${release_body}" ${{ env.version }}
+        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${release_body}" ${{ env.t3version }}
 
   doxygen:
     name: Update Doxygen content on Github pages
