@@ -1,10 +1,10 @@
-
-name: Publish new version (on new tag and manually)
+name: publish2TER
+run-name: Publish new release to TER (on new release)
 
 #run automatically when a new release is done
 on:
   release:
-    types: [released]
+    types: [published]
 
 jobs:
   publish:

@@ -1,5 +1,5 @@
-
-name: Publish new version (on new tag and manually)
+name: publishRelease
+run-name: Publish new release (on new tag ${{ github.ref }})
 
 #run automatically when a new release is done
 on:
