@@ -3,7 +3,6 @@ name: Publish new version (on new tag and manually)
 
 #run automatically when a new release is done
 on:
-  workflow_dispatch:
   release:
     types: [released]
 
