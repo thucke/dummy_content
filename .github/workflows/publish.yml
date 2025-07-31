@@ -5,7 +5,10 @@ run-name: Publish new release to TER (on new release)
 on:
   release:
     types: [published]
-
+  workflow_run:
+    workflows: [publishRelease]
+    types:
+      - completed
 jobs:
   publish:
     name: Publish new version to TER
