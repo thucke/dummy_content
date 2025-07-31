@@ -5,7 +5,7 @@ name: Publish new version (on new tag and manually)
 on:
   push:
     tags:
-      - 'v*'
+      - v[0-9]+.[0-9]+.[0-9]+
 
 jobs:
   publish:
@@ -33,6 +33,7 @@ jobs:
         with:
           token: ${{ github.token }}
           tag: ${{ github.ref_name }}
+          includeInvalidCommits: true
 
       - name: Commit CHANGELOG.md
         uses: stefanzweifel/git-auto-commit-action@v6
@@ -42,13 +43,11 @@ jobs:
           file_pattern: CHANGELOG.md
 
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: ${{ steps.changelog.outputs.changes }}
+          allowUpdates: true
           draft: false
-          prerelease: false
+          makeLatest: true
+          name: ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.changes }}
+          token: ${{ github.token }}
