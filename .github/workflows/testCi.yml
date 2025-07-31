@@ -20,7 +20,7 @@ jobs:
       - name: Get version
         id: get-version
         run: |
-          echo "version=$(echo 'v0.0.1'" >> $GITHUB_ENV
+          echo "version=$(echo 'v0.0.1')" >> $GITHUB_ENV
           # strip possibly trailing "v" from version
           echo "t3version=$(echo 'v0.0.1'} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
 
