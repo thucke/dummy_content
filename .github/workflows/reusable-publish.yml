@@ -35,7 +35,7 @@ jobs:
       - name: Get version
         id: get-version
         run: |
-          github-ref=${{ env.github-ref }}
+          export github-ref="${{ env.github-ref }}"
           echo "version=$(echo ${github-ref/refs\/tags\//})" >> $GITHUB_ENV
           # strip possibly trailing "v" from version
           echo "t3version=$(echo ${github-ref/refs\/tags\//} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
