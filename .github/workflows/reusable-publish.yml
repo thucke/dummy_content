@@ -22,10 +22,10 @@ jobs:
 
       - name: Set reference fom call
         run: |
-          if [[ -z ${{ inputs.github-ref }} ]]; then
+          if [[ -z "${{ inputs.github-ref }}" ]]; then
             echo "github-ref=$(echo ${GITHUB_REF})" >> $GITHUB_ENV
           else
-            github-ref=${{ inputs.github-ref }}
+            github-ref="${{ inputs.github-ref }}"
             echo "github-ref=$(echo ${github-ref})" >> $GITHUB_ENV
           fi
 
