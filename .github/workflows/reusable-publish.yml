@@ -21,6 +21,8 @@ jobs:
 
       - name: Set reference fom call
         run: |
+          test ! -z "${TYPO3_EXTENSION_KEY}"
+          test ! -z "${TYPO3_API_TOKEN}"
           echo "INPUT_GITHUBREF=${{ inputs.github-ref }}" >> $GITHUB_ENV
 
       - name: Check tag
