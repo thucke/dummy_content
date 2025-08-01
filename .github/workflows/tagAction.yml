@@ -1,4 +1,4 @@
-name: publishRelease
+name: Publish Release
 run-name: Publish new release (on new tag ${{ github.ref }})
 
 #run automatically when a new release is done
@@ -53,3 +53,9 @@ jobs:
           body: ${{ steps.changelog.outputs.changes }}
           draft: false
           prerelease: false
+
+      - name: Trigger release publishing
+        id: trigger_publish
+        uses: ./.github/workflows/publish.yml
+        with:
+          github-ref: ${{ github.ref }}
