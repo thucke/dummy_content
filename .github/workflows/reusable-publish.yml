@@ -22,7 +22,7 @@ jobs:
       - name: Set reference fom call
         run: |
           #github-ref="${{ inputs.github-ref }}"
-          echo "github-ref=${{ inputs.github-ref }} >> $GITHUB_ENV
+          echo "github-ref=${{ inputs.github-ref }}" >> $GITHUB_ENV
 
       - name: Check tag
         run: |
