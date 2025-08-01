@@ -3,122 +3,12 @@ run-name: Publish new release to TER (on new release)
 
 #run automatically when a new release is done
 on:
-  workflow_call:
-    inputs:
-      github-ref:
-        required: true
-        type: string
   release:
     types: [published]
 
 jobs:
-  publish:
-    name: Publish new version to TER
-    if: ${{ startsWith(github.ref, 'refs/tags/') || inputs.github-ref }}
-    runs-on: ubuntu-latest
-    env:
-      TYPO3_EXTENSION_KEY: ${{ secrets.TYPO3_EXTENSION_KEY }}
-      TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set reference fom call
-        run: |
-          if [[ -z ${{ inputs.github-ref }} ]]; then
-            echo "github-ref=$(echo ${GITHUB_REF})" >> $GITHUB_ENV
-          else
-            github-ref=${{ inputs.github-ref }}
-            echo "github-ref=$(echo ${github-ref})" >> $GITHUB_ENV
-          fi
-
-      - name: Check tag
-        run: |
-          echo ${{ env.github-ref }}
-          # use ^refs/tags/v[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$ when tag is prefixed with v
-          if ! [[ ${{ env.github-ref }} =~ ^refs/tags/v?[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$ ]]; then
-            exit 1
-          fi
-
-      - name: Get version
-        id: get-version
-        run: |
-          github-ref=${{ env.github-ref }}
-          echo "version=$(echo ${github-ref/refs\/tags\//})" >> $GITHUB_ENV
-          # strip possibly trailing "v" from version
-          echo "t3version=$(echo ${github-ref/refs\/tags\//} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
-
-
-      - name: Fetch release details from current repository
-        id: get_latest_release
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/${{ github.repository }}/releases/tags/${{ env.version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      #see: https://trstringer.com/github-actions-multiline-strings/
-      #substituting the %, \n, and \r characters
-      - name: Store release body
-        id: set-release-body
-        run: |
-          RELEASE_BODY="${RELEASE_BODY//'%'/'%25'}"
-          RELEASE_BODY="${RELEASE_BODY//$'\n'/'%0A'}"
-          RELEASE_BODY="${RELEASE_BODY//$'\r'/'%0D'}"
-          echo "release_body=${RELEASE_BODY}" >> $GITHUB_ENV
-        env:
-          RELEASE_BODY: ${{ fromJson(steps.get_latest_release.outputs.data).body }}
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.3
-          extensions: intl, mbstring, json, zip, curl
-          tools: composer:v2
-
-      - name: Install tailor
-        run: composer global require typo3/tailor --prefer-dist --no-progress --no-suggest
-
-      - name: Set extension version
-        run: php ~/.composer/vendor/bin/tailor set-version ${{ env.t3version }}
-
-      - name: Publish to TER
-        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${release_body}" ${{ env.t3version }}
-
-  doxygen:
-    name: Update Doxygen content on Github pages
-    if: ${{ startsWith(github.ref, 'refs/tags/') || inputs.github-ref }}
-    runs-on: ubuntu-latest
-
-    steps:
-      # Check statuses of Github
-      - name: Check GitHub Pages status
-        uses: crazy-max/ghaction-github-status@v4
-        with:
-          pages_threshold: major_outage
-
-      - name: Checkout Code
-        if: success()
-        uses: actions/checkout@v4
-        with:
-          path: source
-
-      - name: Create Doxygen target directory
-        run: mkdir -p ${GITHUB_WORKSPACE}/target
-
-      - name: Generate Doxygen
-        if: success()
-        uses: mattnotmitt/doxygen-action@v1
-        with:
-          working-directory: /github/workspace/target
-          doxyfile-path: /github/workspace/source/.doxygen
-
-      - name: Deploy Doxygen
-        if: success()
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: target/html
-          keep_files: false
-          commit_message: Update Doxygen for new release
+  call_publish_workflow:
+    name: Trigger release publishing
+    uses: ./.github/actions/publish
+    with:
+      github-ref: ${{ github.ref }}

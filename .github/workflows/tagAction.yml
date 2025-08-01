@@ -56,6 +56,6 @@ jobs:
 
       - name: Trigger release publishing
         id: trigger_publish
-        uses: ./.github/workflows/publish.yml
+        uses: ./.github/actions/publish
         with:
           github-ref: ${{ github.ref }}
