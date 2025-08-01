@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.0.12] - 2025-08-01
+### :wrench: Chores
+- [`746ed68`](https://github.com/thucke/dummy_content/commit/746ed68138e0027a2b474cf449c170f141e9ff1a) - fix trigger publish from tagAction *(commit by [@thucke](https://github.com/thucke))*
+- [`57b56ae`](https://github.com/thucke/dummy_content/commit/57b56aead8b827adf2546ef46a2ef7dfbc6903a6) - fix trigger publish from tagAction *(commit by [@thucke](https://github.com/thucke))*
+- [`dcb28e7`](https://github.com/thucke/dummy_content/commit/dcb28e7f00785b0a1f8ceedc96d190a371eeb280) - fix trigger publish from tagAction *(commit by [@thucke](https://github.com/thucke))*
+
+
 ## [v0.0.11] - 2025-08-01
 ### :wrench: Chores
 - [`ea22476`](https://github.com/thucke/dummy_content/commit/ea22476f93fcf6201b71378224518a46eb3c56eb) - trigger publish from tagAction *(commit by [@thucke](https://github.com/thucke))*
@@ -34,3 +41,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [v0.0.9]: https://github.com/thucke/dummy_content/compare/v0.0.8...v0.0.9
 [v0.0.10]: https://github.com/thucke/dummy_content/compare/v0.0.9...v0.0.10
 [v0.0.11]: https://github.com/thucke/dummy_content/compare/v0.0.10...v0.0.11
+[v0.0.12]: https://github.com/thucke/dummy_content/compare/v0.0.11...v0.0.12
