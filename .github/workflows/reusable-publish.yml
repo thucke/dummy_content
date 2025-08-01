@@ -21,24 +21,23 @@ jobs:
 
       - name: Set reference fom call
         run: |
-          #github-ref="${{ inputs.github-ref }}"
-          echo "github-ref=${{ inputs.github-ref }}" >> $GITHUB_ENV
+          echo "INPUT_GITHUBREF=${{ inputs.github-ref }}" >> $GITHUB_ENV
 
       - name: Check tag
         run: |
-          echo ${{ env.github-ref }}
+          echo ${INPUT_GITHUBREF}
           # use ^refs/tags/v[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$ when tag is prefixed with v
-          if ! [[ ${{ env.github-ref }} =~ ^refs/tags/v?[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$ ]]; then
+          if ! [[ ${INPUT_GITHUBREF} =~ ^refs/tags/v?[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$ ]]; then
             exit 1
           fi
 
       - name: Get version
         id: get-version
         run: |
-          export github-ref="${{ env.github-ref }}"
-          echo "version=$(echo ${github-ref/refs\/tags\//})" >> $GITHUB_ENV
+          echo INPUT_GITHUBREF="${INPUT_GITHUBREF}"
+          echo "version=$(echo ${INPUT_GITHUBREF/refs\/tags\//})" >> $GITHUB_ENV
           # strip possibly trailing "v" from version
-          echo "t3version=$(echo ${github-ref/refs\/tags\//} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
+          echo "t3version=$(echo ${INPUT_GITHUBREF/refs\/tags\//} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
 
 
       - name: Fetch release details from current repository
