@@ -9,7 +9,7 @@ on:
 
 jobs:
   publish:
-    name: Publish new version to TER
+    name: Publish Github release incl. generated CHANGELOG
     runs-on: ubuntu-latest
     env:
       TYPO3_EXTENSION_KEY: ${{ secrets.TYPO3_EXTENSION_KEY }}

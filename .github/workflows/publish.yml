@@ -1,5 +1,5 @@
 name: Publish to TYPO3 TER
-run-name: Publish new release to TER (on new release)
+run-name: Publish new release to TER (on new Github release)
 
 #run automatically when a new release is done
 on:
