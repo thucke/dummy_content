@@ -53,6 +53,7 @@ jobs:
       #see: https://trstringer.com/github-actions-multiline-strings/
       #substituting the %, \n, and \r characters
       - name: Store release body
+        if: ${{ success() }}
         id: set-release-body
         run: |
           RELEASE_BODY="${RELEASE_BODY//'%'/'%25'}"
