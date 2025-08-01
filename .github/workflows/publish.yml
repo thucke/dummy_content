@@ -9,6 +9,6 @@ on:
 jobs:
   call_publish_workflow:
     name: Trigger release publishing
-    uses: ./.github/actions/publish
+    uses: ./.github/actions/publish/action.yml@HEAD
     with:
       github-ref: ${{ github.ref }}
