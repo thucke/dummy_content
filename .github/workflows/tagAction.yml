@@ -54,8 +54,8 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Trigger release publishing
-        id: trigger_publish
-        uses: ./.github/actions/publish
-        with:
-          github-ref: ${{ github.ref }}
+  call_publish_workflow:
+    uses: ./.github/workflows/reusable-publish.yml
+    needs: [ publish ]
+    with:
+      github-ref: ${{ github.ref }}
