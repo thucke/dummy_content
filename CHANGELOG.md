@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.0.9] - 2025-08-02
+### :wrench: Chores
+- [`21d25d4`](https://github.com/thucke/dummy_content/commit/21d25d4adf5aa1c3f54c773a0f1af77554791726) - show release body content *(commit by [@thucke](https://github.com/thucke))*
+
+
 ## [v0.0.8] - 2025-08-02
 ### :wrench: Chores
 - [`1829a45`](https://github.com/thucke/dummy_content/commit/1829a4587359df95458187565528a470d30212ae) - show release body content *(commit by [@thucke](https://github.com/thucke))*
@@ -111,3 +116,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [v0.0.6]: https://github.com/thucke/dummy_content/compare/v0.0.5...v0.0.6
 [v0.0.7]: https://github.com/thucke/dummy_content/compare/v0.0.6...v0.0.7
 [v0.0.8]: https://github.com/thucke/dummy_content/compare/v0.0.7...v0.0.8
+[v0.0.9]: https://github.com/thucke/dummy_content/compare/v0.0.8...v0.0.9
