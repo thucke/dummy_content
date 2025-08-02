@@ -11,9 +11,6 @@ jobs:
   publish:
     name: Publish Github release incl. generated CHANGELOG
     runs-on: ubuntu-latest
-    env:
-      TYPO3_EXTENSION_KEY: ${{ secrets.TYPO3_EXTENSION_KEY }}
-      TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
 
     steps:
       - name: Checkout repository
