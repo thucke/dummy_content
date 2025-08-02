@@ -48,11 +48,33 @@ jobs:
           # strip possibly trailing "v" from version
           echo "T3EXT_VERSION=$(echo ${INPUT_GITHUBREF/refs\/tags\//} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
 
-      - name: Fetch latest release
-        id: fetch-latest-release
-        uses: thebritican/fetch-latest-release@v1
+      - id: fetch-latest-release
+        uses: thebritican/fetch-latest-release@v2
         with:
           github_token: ${{ github.token }}
+
+      - name: Fetch release details from current repository
+        id: get_latest_release
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/${{ github.repository }}/releases/tags/${{env.GIT_TAG}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: devops-actions/json-to-file@v1.0.0
+        with:
+          json: "${{ fromJson(steps.get_latest_release.outputs.data).body }}"
+          filename: RELEASE_NOTES
+
+      #see: https://trstringer.com/github-actions-multiline-strings/
+      #substituting the %, \n, and \r characters
+      - name: Store release body
+        id: set-release-body
+        run: |
+          sed --in-place -E -e 's/%/%25/' RELEASE_NOTES
+          sed --in-place -E -e 's/\n/%0A/' RELEASE_NOTES
+          sed --in-place -E -e 's/\r/%0D/' RELEASE_NOTES
+          echo "RELEASE_BODY=$(cat RELEASE_NOTES)" >> $GITHUB_ENV
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -72,7 +94,7 @@ jobs:
         run: php ~/.composer/vendor/bin/tailor set-version --no-docs -- ${{env.T3EXT_VERSION}}
 
       - name: Publish to TER
-        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${{steps.fetch-latest-release.outputs.body}}" ${{env.T3EXT_VERSION}}
+        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${{env.RELEASE_BODY}}" ${{env.T3EXT_VERSION}}
 
   doxygen:
     name: Update Doxygen content on Github pages
