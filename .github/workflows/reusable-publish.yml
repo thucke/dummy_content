@@ -65,7 +65,7 @@ jobs:
           RELEASE_BODY="${RELEASE_BODY//'%'/'%25'}"
           RELEASE_BODY="${RELEASE_BODY//$'\n'/'%0A'}"
           RELEASE_BODY="${RELEASE_BODY//$'\r'/'%0D'}"
-          echo "release_body=${RELEASE_BODY}" >> $GITHUB_ENV          
+          echo "RELEASE_BODY=${RELEASE_BODY}" >> $GITHUB_ENV          
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -77,16 +77,15 @@ jobs:
       - name: Install tailor
         run: composer global require typo3/tailor --prefer-dist --no-progress --no-suggest
 
-      - name: Set
+      - name: Set TYPO3_EXTENSION_KEY from file
         run: |
           echo "TYPO3_EXTENSION_KEY=$(composer config extra.typo3/cms.extension-key)" >> $GITHUB_ENV
-          echo "TYPO3_EXTENSION_KEY: ${TYPO3_EXTENSION_KEY}"
 
       - name: Set extension version
-        run: php ~/.composer/vendor/bin/tailor set-version ${{env.T3EXT_VERSION}}
+        run: php ~/.composer/vendor/bin/tailor set-version --no-docs ${{env.T3EXT_VERSION}}
 
       - name: Publish to TER
-        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${release_body}" ${{env.T3EXT_VERSION}}
+        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${{env.RELEASE_BODY}}" ${{env.T3EXT_VERSION}}
 
   doxygen:
     name: Update Doxygen content on Github pages
