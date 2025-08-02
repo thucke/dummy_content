@@ -16,13 +16,19 @@ jobs:
       TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
 
     steps:
+      - name: Check preconditions
+        run: |
+          if [[ -z "${TYPO3_API_TOKEN}" ]]; then
+            echo "::error missing secret TYPO3_API_TOKEN"
+            echo "### :boom: Missing secret TYPO3_API_TOKEN (doc to create using [Tailor](https://github.com/TYPO3/tailor?tab=readme-ov-file#manage-your-personal-access-token))" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set reference fom call
         run: |
-          test ! -z "${TYPO3_EXTENSION_KEY}"
-          test ! -z "${TYPO3_API_TOKEN}"
           echo "INPUT_GITHUBREF=${{ inputs.github-ref }}" >> $GITHUB_ENV
 
       - name: Check tag
@@ -37,31 +43,28 @@ jobs:
         id: get-version
         run: |
           echo INPUT_GITHUBREF="${INPUT_GITHUBREF}"
-          echo "version=$(echo ${INPUT_GITHUBREF/refs\/tags\//})" >> $GITHUB_ENV
+          echo "GIT_TAG=$(echo ${INPUT_GITHUBREF/refs\/tags\//})" >> $GITHUB_ENV
           # strip possibly trailing "v" from version
-          echo "t3version=$(echo ${INPUT_GITHUBREF/refs\/tags\//} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
-
+          echo "T3EXT_VERSION=$(echo ${INPUT_GITHUBREF/refs\/tags\//} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
 
       - name: Fetch release details from current repository
         id: get_latest_release
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/${{ github.repository }}/releases/tags/${{ env.version }}
+          route: GET /repos/${{ github.repository }}/releases/tags/${GIT_TAG}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       #see: https://trstringer.com/github-actions-multiline-strings/
       #substituting the %, \n, and \r characters
       - name: Store release body
-        if: ${{ success() }}
         id: set-release-body
         run: |
+          RELEASE_BODY=${{ fromJson(steps.get_latest_release.outputs.data).body }}
           RELEASE_BODY="${RELEASE_BODY//'%'/'%25'}"
           RELEASE_BODY="${RELEASE_BODY//$'\n'/'%0A'}"
           RELEASE_BODY="${RELEASE_BODY//$'\r'/'%0D'}"
-          echo "release_body=${RELEASE_BODY}" >> $GITHUB_ENV
-        env:
-          RELEASE_BODY: ${{ fromJson(steps.get_latest_release.outputs.data).body }}
+          echo "release_body=${RELEASE_BODY}" >> $GITHUB_ENV          
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -73,11 +76,16 @@ jobs:
       - name: Install tailor
         run: composer global require typo3/tailor --prefer-dist --no-progress --no-suggest
 
+      - name: Set
+        run: |
+          echo "TYPO3_EXTENSION_KEY=$(composer config extra.typo3/cms.extension-key)" >> $GITHUB_ENV
+          echo "TYPO3_EXTENSION_KEY: ${TYPO3_EXTENSION_KEY}"
+
       - name: Set extension version
-        run: php ~/.composer/vendor/bin/tailor set-version ${{ env.t3version }}
+        run: php ~/.composer/vendor/bin/tailor set-version ${T3EXT_VERSION}
 
       - name: Publish to TER
-        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${release_body}" ${{ env.t3version }}
+        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${release_body}" ${T3EXT_VERSION}
 
   doxygen:
     name: Update Doxygen content on Github pages
