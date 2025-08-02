@@ -36,6 +36,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up PHP version ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2, php-cs-fixer
+
+      - name: Environment Check
+        run: |
+          php --version
+          composer --version
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Install dependencies with typo3/cms-core:${{ matrix.typo3 }}
+        run: |
+          composer require typo3/cms-core:${{ matrix.typo3 }} --no-progress
+          git checkout composer.json
+
+      - name: Info
+        run: composer info
+
       - name: Lint PHP
         run: composer thucke:test:php:lint
 
