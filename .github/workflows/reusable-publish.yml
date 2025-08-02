@@ -66,14 +66,12 @@ jobs:
 
       - name: Publish to TER
         run: |
-          # check if release was created with markdown content (maybe from conventional commits)
-          if [[ "$(grep -c '###' RELEASE_NOTES)" -eq 0 ]]; then
-            # upload using given tag annotations
-            git tag -n10 -l ${INPUT_GITHUBREF} | sed 's/^[0-9.]*[ ]*//g' > RELEASE_NOTES
-          else
-            # upload using reference to Github release
+          # upload using given tag annotations if some were given
+          git tag -n10 -l ${INPUT_GITHUBREF} | sed 's/^[0-9.]*[ ]*//g' > RELEASE_NOTES
+          if [[ $(wc -l RELEASE_NOTES|cut -d\  -f1) -eq 0 ]]; then
+            # otherwise upload using reference to Github release
             echo "Updated extension to ${T3EXT_VERSION}" > RELEASE_NOTES
-            echo $'\n\nDetails see Github release notes:\n' >> RELEASE_NOTES
+            echo $'\nDetails see Github release notes:' >> RELEASE_NOTES
             echo "https://github.com/${{ github.repository }}/releases/tag/${{env.GIT_TAG}}" >> RELEASE_NOTES
           fi
           cat RELEASE_NOTES
