@@ -82,7 +82,7 @@ jobs:
           echo "TYPO3_EXTENSION_KEY=$(composer config extra.typo3/cms.extension-key)" >> $GITHUB_ENV
 
       - name: Set extension version
-        run: php ~/.composer/vendor/bin/tailor set-version --no-docs ${{env.T3EXT_VERSION}}
+        run: php ~/.composer/vendor/bin/tailor set-version --no-docs -- ${{env.T3EXT_VERSION}}
 
       - name: Publish to TER
         run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${{env.RELEASE_BODY}}" ${{env.T3EXT_VERSION}}
