@@ -48,11 +48,6 @@ jobs:
           # strip possibly trailing "v" from version
           echo "T3EXT_VERSION=$(echo ${INPUT_GITHUBREF/refs\/tags\//} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
 
-      - id: fetch-latest-release
-        uses: thebritican/fetch-latest-release@v2
-        with:
-          github_token: ${{ github.token }}
-
       - name: Fetch release details from current repository
         id: get_latest_release
         uses: octokit/request-action@v2.x
