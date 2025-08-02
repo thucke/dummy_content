@@ -13,14 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+      TYPO3_API_USERNAME: ${{ secrets.TYPO3_API_USERNAME }}
+      TYPO3_API_PASSWORD: ${{ secrets.TYPO3_API_PASSWORD }}
 
     steps:
-      - name: Check preconditions
+      - name: Check auth credential preconditions
         run: |
-          if [[ -z "${TYPO3_API_TOKEN}" ]]; then
-            echo "### :boom: Missing secret TYPO3_API_TOKEN (doc to create using [Tailor](https://github.com/TYPO3/tailor?tab=readme-ov-file#manage-your-personal-access-token))" >> $GITHUB_STEP_SUMMARY
+          if [[ -z "${TYPO3_API_TOKEN}" || ( -z "${TYPO3_API_USERNAME}" || -z "${TYPO3_API_PASSWORD}" ) ]]; then
+            echo "### :boom: Missing secret TYPO3_API_TOKEN" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo 'You may create a new token in ["My TYPO3"](https://extensions.typo3.org/my-access-tokens/create) backend.' >> $GITHUB_STEP_SUMMARY
+            echo "Secrets TYPO3_API_USERNAME/TYPO3_API_PASSWORD are also allowed but discouraged." >> $GITHUB_STEP_SUMMARY
             #echo "::error missing secret TYPO3_API_TOKEN"
-            #TODO remove before merge and uncomment exit
+            #TODO remove before merge and uncomment former echo
             echo "TYPO3_API_TOKEN=TYPO3_API_TOKEN_DUMMY"  >> $GITHUB_ENV
           fi
 
@@ -70,7 +75,7 @@ jobs:
           git tag -n10 -l ${INPUT_GITHUBREF} | sed 's/^[0-9.]*[ ]*//g' > RELEASE_NOTES
           if [[ $(wc -l RELEASE_NOTES|cut -d\  -f1) -eq 0 ]]; then
             # otherwise upload using reference to Github release
-            echo "Updated extension to ${T3EXT_VERSION}" > RELEASE_NOTES
+            echo "Updated extension to version ${T3EXT_VERSION}" > RELEASE_NOTES
             echo $'\nDetails see Github release notes:' >> RELEASE_NOTES
             echo "https://github.com/${{ github.repository }}/releases/tag/${{env.GIT_TAG}}" >> RELEASE_NOTES
           fi
