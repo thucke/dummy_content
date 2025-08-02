@@ -20,13 +20,11 @@ jobs:
       - name: Check auth credential preconditions
         run: |
           if [[ -z "${TYPO3_API_TOKEN}" || ( -z "${TYPO3_API_USERNAME}" || -z "${TYPO3_API_PASSWORD}" ) ]]; then
-            echo "### :boom: Missing secret TYPO3_API_TOKEN" >> $GITHUB_STEP_SUMMARY
+            echo "### :boom: Missing secret `TYPO3_API_TOKEN`" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo 'You may create a new token in ["My TYPO3"](https://extensions.typo3.org/my-access-tokens/create) backend.' >> $GITHUB_STEP_SUMMARY
-            echo "Secrets TYPO3_API_USERNAME/TYPO3_API_PASSWORD are also allowed but discouraged." >> $GITHUB_STEP_SUMMARY
-            #echo "::error missing secret TYPO3_API_TOKEN"
-            #TODO remove before merge and uncomment former echo
-            echo "TYPO3_API_TOKEN=TYPO3_API_TOKEN_DUMMY"  >> $GITHUB_ENV
+            echo "Secrets `TYPO3_API_USERNAME`/`TYPO3_API_PASSWORD` are also allowed but discouraged." >> $GITHUB_STEP_SUMMARY
+            echo "::error missing secret TYPO3_API_TOKEN or TYPO3_API_USERNAME/TYPO3_API_PASSWORD"
           fi
 
       - name: Checkout repository
