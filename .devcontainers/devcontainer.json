@@ -1,0 +1,33 @@
+{
+  "name": "Dummy content development",
+  "dockerComposeFile": [
+    "docker-compose.devcontainer.yaml"
+  ],
+  "service": "devcontainer",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "features": {
+    "ghcr.io/devcontainers/features/sshd:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:1": {},
+    "ghcr.io/devcontainers-extra/features/mosh-apt-get:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "containerEnv":{
+    "WORKSPACE_ROOT": "${containerWorkspaceFolder}"
+  },
+  "forwardPorts": [
+    "web:80",
+    "php:9000",
+    "db:3306"
+  ],
+  "portsAttributes": {
+    "web:80": {
+      "label": "Nginx webserver"
+    }, 
+    "php:9000": {
+      "label": "PHP-FPM"
+    },
+    "db:3306": {
+      "label": "Mysql/MariaDB database"
+    }
+  }
+}

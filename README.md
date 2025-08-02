@@ -20,7 +20,7 @@ Currently following content types are preconfigured
 Install the extension by using composer and `composer req colorcube/dummy-content` or by downloading it in the extension
 manager or on https://extensions.typo3.org/extension/dummy_content/.
 
-Tested with TYPO3 v8.7, v9.5 and v10.4. 
+Tested with TYPO3 v12.4 and v13.4. 
 
 ## Usage
 
