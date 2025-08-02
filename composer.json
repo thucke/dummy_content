@@ -32,7 +32,8 @@
       "allow-plugins": {
         "typo3/class-alias-loader": true,
         "typo3/cms-composer-installers": true,
-        "phpstan/extension-installer": true
+        "phpstan/extension-installer": true,
+        "bamarni/composer-bin-plugin": true
       }
     },
     "require": {
