@@ -23,7 +23,11 @@
     ],
     "config":{
       "platform": {
-        "php": "8.3"
+        "php": "8.3",
+        "bin-dir": ".build/bin",
+        "discard-changes": true,
+        "optimize-autoloader": true,
+        "vendor-dir": ".build/vendor"
       }
     },
     "require": {
@@ -32,10 +36,10 @@
         "typo3/cms-core": "^12.4 || ^13.4"
     },
     "require-dev": {
-      "friendsofphp/php-cs-fixer": "^2.18",
-      "jangregor/phpstan-prophecy": "^0.8.0",
-      "phpstan/extension-installer": "^1.1",
-      "saschaegerer/phpstan-typo3": "^0.13.1"
+      "friendsofphp/php-cs-fixer": "*",
+      "jangregor/phpstan-prophecy": "*",
+      "phpstan/extension-installer": "*",
+      "saschaegerer/phpstan-typo3": "*"
     },
     "replace": {
         "typo3-ter/dummy-content": "self.version"
@@ -47,7 +51,9 @@
     },
     "extra": {
         "typo3/cms": {
-            "extension-key": "dummy_content"
+          "extension-key": "dummy_content",
+          "web-dir": ".build/public",
+          "app-dir": ".build"
         },
         "phpstan": {
           "includes": [
@@ -67,6 +73,9 @@
       ],
       "test:phpstan:tests": [
         "phpstan analyze Tests"
+      ],
+      "pre-autoload-dump": [
+        "mkdir -pv .build/public/"
       ]
     }
 }
