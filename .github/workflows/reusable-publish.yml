@@ -70,7 +70,7 @@ jobs:
           if [[ "$(grep -c '###' RELEASE_NOTES)" -eq 0 ]]; then
             # upload using given tag annotations
             git tag -n10 -l ${INPUT_GITHUBREF} | sed 's/^[0-9.]*[ ]*//g' > RELEASE_NOTES
-          then
+          else
             # upload using reference to Github release
             echo "Updated extension to ${T3EXT_VERSION}" > RELEASE_NOTES
             echo $'\n\nDetails see Github release notes:\n' >> RELEASE_NOTES
