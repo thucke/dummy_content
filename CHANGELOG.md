@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.0.15] - 2025-08-02
+### :wrench: Chores
+- [`087012d`](https://github.com/thucke/dummy_content/commit/087012d90b1c21bee4a534fa11635a99ac2cb430) - refactor fetch latest release *(commit by [@thucke](https://github.com/thucke))*
+
+
 ## [v0.0.14] - 2025-08-02
 ### :wrench: Chores
 - [`a3ce3a0`](https://github.com/thucke/dummy_content/commit/a3ce3a07b421217daeb805483f7f2c5e77a4bb72) - fetch TYPO3_EXTENSION_KEY from ext config *(commit by [@thucke](https://github.com/thucke))*
@@ -36,3 +41,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [v0.0.3]: https://github.com/thucke/dummy_content/compare/v0.0.2...v0.0.3
 [v0.0.13]: https://github.com/thucke/dummy_content/compare/v0.0.12...v0.0.13
 [v0.0.14]: https://github.com/thucke/dummy_content/compare/v0.0.13...v0.0.14
+[v0.0.15]: https://github.com/thucke/dummy_content/compare/v0.0.14...v0.0.15
