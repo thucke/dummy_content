@@ -41,6 +41,7 @@
         "typo3/cms-core": "^12.4 || ^13.4"
     },
     "require-dev": {
+      "bamarni/composer-bin-plugin": "*",
       "friendsofphp/php-cs-fixer": "*",
       "jangregor/phpstan-prophecy": "*",
       "phpstan/extension-installer": "*",
@@ -64,6 +65,11 @@
           "includes": [
             "extension.neon"
           ]
+        },
+        "bamarni-bin": {
+          "bin-links": true,
+          "target-directory": "vendor-bin",
+          "forward-command": true
         }
     },
     "scripts": {
