@@ -28,6 +28,9 @@
       "vendor-dir": ".build/vendor",
       "platform": {
         "php": "8.3"
+      },
+      "allow-plugins": {
+        "typo3/cms-composer-installers": "*"
       }
     },
     "require": {
