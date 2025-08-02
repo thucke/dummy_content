@@ -69,7 +69,6 @@ jobs:
           sed --in-place -E -e 's/%/%25/' RELEASE_NOTES
           sed --in-place -E -e 's/\n/%0A/' RELEASE_NOTES
           sed --in-place -E -e 's/\r/%0D/' RELEASE_NOTES
-          echo "RELEASE_BODY=$(cat RELEASE_NOTES)" >> $GITHUB_ENV
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
