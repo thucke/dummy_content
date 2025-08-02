@@ -30,7 +30,8 @@
         "php": "8.3"
       },
       "allow-plugins": {
-        "typo3/cms-composer-installers": "*"
+        "typo3/class-alias-loader": true,
+        "typo3/cms-composer-installers": true
       }
     },
     "require": {
