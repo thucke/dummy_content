@@ -12,7 +12,6 @@ jobs:
     name: Publish new version to TER
     runs-on: ubuntu-latest
     env:
-      TYPO3_EXTENSION_KEY: ${{ secrets.TYPO3_EXTENSION_KEY }}
       TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
 
     steps:
@@ -48,29 +47,6 @@ jobs:
           # strip possibly trailing "v" from version
           echo "T3EXT_VERSION=$(echo ${INPUT_GITHUBREF/refs\/tags\//} | sed -r 's/^v(.*)/\1/')" >> $GITHUB_ENV
 
-      - name: Fetch release details from current repository
-        id: get_latest_release
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/${{ github.repository }}/releases/tags/${{env.GIT_TAG}}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: devops-actions/json-to-file@v1.0.0
-        with:
-          json: "${{ fromJson(steps.get_latest_release.outputs.data).body }}"
-          filename: RELEASE_NOTES
-
-      #see: https://trstringer.com/github-actions-multiline-strings/
-      #substituting the %, \n, and \r characters
-      - name: Store release body
-        id: set-release-body
-        run: |
-          sed --in-place -E -e 's/%/%25/' RELEASE_NOTES
-          sed --in-place -E -e 's/\n/%0A/' RELEASE_NOTES
-          sed --in-place -E -e 's/\r/%0D/' RELEASE_NOTES
-          cat RELEASE_NOTES
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -89,8 +65,19 @@ jobs:
         run: php ~/.composer/vendor/bin/tailor set-version --no-docs -- ${{env.T3EXT_VERSION}}
 
       - name: Publish to TER
-        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "$(cat RELEASE_NOTES)" ${{env.T3EXT_VERSION}}
-
+        run: |
+          # check if release was created with markdown content (maybe from conventional commits)
+          if [[ "$(grep -c '###' RELEASE_NOTES)" -eq 0 ]]; then
+            # upload using given tag annotations
+            git tag -n10 -l ${INPUT_GITHUBREF} | sed 's/^[0-9.]*[ ]*//g' > RELEASE_NOTES
+          then
+            # upload using reference to Github release
+            echo "Updated extension to ${T3EXT_VERSION}" > RELEASE_NOTES
+            echo $'\n\nDetails see Github release notes:\n' >> RELEASE_NOTES
+            echo "https://github.com/${{ github.repository }}/releases/tag/${{env.GIT_TAG}}" >> RELEASE_NOTES
+          fi
+          cat RELEASE_NOTES
+          php ~/.composer/vendor/bin/tailor ter:publish --comment "$(cat RELEASE_NOTES)" ${{env.T3EXT_VERSION}}
   doxygen:
     name: Update Doxygen content on Github pages
     runs-on: ubuntu-latest
