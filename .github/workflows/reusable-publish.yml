@@ -89,7 +89,7 @@ jobs:
         run: php ~/.composer/vendor/bin/tailor set-version --no-docs -- ${{env.T3EXT_VERSION}}
 
       - name: Publish to TER
-        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "${{env.RELEASE_BODY}}" ${{env.T3EXT_VERSION}}
+        run: php ~/.composer/vendor/bin/tailor ter:publish --comment "$(cat RELEASE_NOTES)" ${{env.T3EXT_VERSION}}
 
   doxygen:
     name: Update Doxygen content on Github pages
