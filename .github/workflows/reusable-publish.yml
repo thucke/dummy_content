@@ -21,7 +21,7 @@ jobs:
           if [[ -z "${TYPO3_API_TOKEN}" ]]; then
             echo "### :boom: Missing secret TYPO3_API_TOKEN (doc to create using [Tailor](https://github.com/TYPO3/tailor?tab=readme-ov-file#manage-your-personal-access-token))" >> $GITHUB_STEP_SUMMARY
             #echo "::error missing secret TYPO3_API_TOKEN"
-            //TODO remove before merge and uncomment exit
+            #TODO remove before merge and uncomment exit
             echo "TYPO3_API_TOKEN=TYPO3_API_TOKEN_DUMMY"  >> $GITHUB_ENV
           fi
 
