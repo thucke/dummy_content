@@ -61,11 +61,11 @@ jobs:
       - name: Store release body
         id: set-release-body
         run: |
-          RELEASE_BODY=${{ fromJson(steps.get_latest_release.outputs.data).body }}
+          RELEASE_BODY="${{ fromJson(steps.get_latest_release.outputs.data).body }}"
           RELEASE_BODY="${RELEASE_BODY//'%'/'%25'}"
           RELEASE_BODY="${RELEASE_BODY//$'\n'/'%0A'}"
           RELEASE_BODY="${RELEASE_BODY//$'\r'/'%0D'}"
-          echo "RELEASE_BODY=${RELEASE_BODY}" >> $GITHUB_ENV          
+          echo "RELEASE_BODY=\"${RELEASE_BODY}\"" >> $GITHUB_ENV          
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
