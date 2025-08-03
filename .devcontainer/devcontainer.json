@@ -3,7 +3,7 @@
   "dockerComposeFile": [
     "docker-compose.yaml"
   ],
-  "service": "devcontainer",
+  "service": "app",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "features": {
     "ghcr.io/devcontainers/features/sshd:1": {},
