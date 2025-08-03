@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    volumes:
+      - ../..:/workspaces:cached
+    ports:
+      - '8080:80'
+#    depends_on:
+#      - db

@@ -1,7 +1,7 @@
 {
   "name": "Dummy content development",
   "dockerComposeFile": [
-    "docker-compose.devcontainer.yaml"
+    "docker-compose.yaml"
   ],
   "service": "devcontainer",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
@@ -10,9 +10,6 @@
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers-extra/features/mosh-apt-get:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/opencodeco/devcontainers/install-php-extensions:0": {
-      "extensions": "pdo_mysql mysqli intl zip exif"
-    }
   },
   "containerEnv":{
     "WORKSPACE_ROOT": "${containerWorkspaceFolder}"
