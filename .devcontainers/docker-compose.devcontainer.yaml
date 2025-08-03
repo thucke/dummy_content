@@ -3,7 +3,8 @@
 # https://blog.hdnet.de/blog/setting-up-typo3-9-locally
 services:
   devcontainer:
-    image: mcr.microsoft.com/devcontainers/php:8
+    image: php:8.3-apache
+    #image: mcr.microsoft.com/devcontainers/php:8
     volumes:
       - ../..:/workspaces:cached
     networks:
