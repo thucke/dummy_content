@@ -3,7 +3,7 @@
   "dockerComposeFile": [
     "docker-compose.yaml"
   ],
-  "service": "app",
+  "service": "apachephp",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "features": {
     "ghcr.io/devcontainers/features/sshd:1": {},
@@ -21,7 +21,7 @@
   ],
   "portsAttributes": {
     "web:80": {
-      "label": "Nginx webserver"
+      "label": "Apache webserver"
     }, 
     "php:9000": {
       "label": "PHP-FPM"

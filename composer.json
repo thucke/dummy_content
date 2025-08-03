@@ -1,4 +1,8 @@
 {
+    "repositories": [
+      { "type": "composer", "url": "https://composer.typo3.org/" },
+      { "type": "path", "url": "../*" }
+    ],
     "name": "colorcube/dummy-content",
     "description": "Dummy Content is a TYPO3 extension that helps to add dummy text to pages and content elements (lorem ipsum)",
     "type": "typo3-cms-extension",
@@ -22,14 +26,13 @@
         }
     ],
     "config": {
-      "bin-dir": ".build/bin",
-      "discard-changes": true,
+      "sort-packages": true,
       "optimize-autoloader": true,
-      "vendor-dir": ".build/vendor",
       "platform": {
         "php": "8.3"
       },
       "allow-plugins": {
+        "helhum/dotenv-connector": true,
         "typo3/class-alias-loader": true,
         "typo3/cms-composer-installers": true,
         "phpstan/extension-installer": true,
