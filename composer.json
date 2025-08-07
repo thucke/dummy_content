@@ -45,11 +45,12 @@
         "typo3/cms-core": "^12.4 || ^13.4"
     },
     "require-dev": {
-      "bamarni/composer-bin-plugin": "*",
-      "friendsofphp/php-cs-fixer": "*",
-      "jangregor/phpstan-prophecy": "*",
-      "phpstan/extension-installer": "*",
-      "saschaegerer/phpstan-typo3": "*"
+        "friendsofphp/php-cs-fixer": "*",
+        "jangregor/phpstan-prophecy": "*",
+        "overtrue/phplint": "^9.6",
+        "phpstan/extension-installer": "*",
+        "phpunit/phpunit": "^12.3",
+        "saschaegerer/phpstan-typo3": "*"
     },
     "replace": {
         "typo3-ter/dummy-content": "self.version"
@@ -61,19 +62,12 @@
     },
     "extra": {
         "typo3/cms": {
-          "extension-key": "dummy_content",
-          "web-dir": ".build/public",
-          "app-dir": ".build"
+          "extension-key": "dummy_content"
         },
         "phpstan": {
           "includes": [
             "extension.neon"
           ]
-        },
-        "bamarni-bin": {
-          "bin-links": true,
-          "target-directory": "vendor-bin",
-          "forward-command": true
         }
     },
     "scripts": {
@@ -81,7 +75,7 @@
         "phplint"
       ],
       "test:cgl": [
-        "php-cs-fixer --using-cache=yes --diff -v fix"
+        "php-cs-fixer --using-cache=yes --diff -vvv fix Classes"
       ],
       "test:phpstan:classes": [
         "TYPO3_CONTEXT=Development; phpstan analyse Classes"
@@ -90,7 +84,7 @@
         "phpstan analyze Tests"
       ],
       "pre-autoload-dump": [
-        "mkdir -pv .build/public/"
+        "mkdir -pv var/log"
       ]
     }
 }

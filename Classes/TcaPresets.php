@@ -1,10 +1,18 @@
 <?php
-declare(strict_types=1);
+
+declare(strict_types = 1);
+
+/*
+ * This file is part of the package dummy_content.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE file that was distributed with this source code.
+ */
 
 namespace Colorcube\DummyContent;
 
-abstract class TcaPresets {
-
+abstract class TcaPresets
+{
     public static function getFieldControlForHeader(): array
     {
         return  [
@@ -37,7 +45,6 @@ abstract class TcaPresets {
             ],
         ];
     }
-
 
     public static function getFieldControlForTeaser(): array
     {
@@ -73,7 +80,6 @@ abstract class TcaPresets {
             ],
         ];
     }
-
 
     public static function getFieldControlForBodytext(): array
     {

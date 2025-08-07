@@ -1,16 +1,24 @@
 <?php
-declare(strict_types=1);
+
+declare(strict_types = 1);
+
+/*
+ * This file is part of the package dummy_content.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE file that was distributed with this source code.
+ */
 
 namespace Colorcube\DummyContent\Form;
 
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Form\AbstractNode;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Domain\ConsumableString;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Routing\SiteMatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Domain\ConsumableString;
 
 /**
  * Dummy Content dummy text wizard
@@ -33,7 +41,7 @@ class DummyContentWizard extends AbstractNode
         $itemName = $parameterArray['itemFormElName'];
         $isRTE = (bool)($parameterArray['fieldConf']['config']['enableRichtext'] ?? false);
 
-        $dcwEventListenerJS = "";
+        $dcwEventListenerJS = '';
         $html = [];
         $html[] = '<div class="help-block">';
         $html[] = htmlspecialchars($languageService->sL('LLL:EXT:dummy_content/Resources/Private/Language/Labels.xlf:dummyText')) . ' ';
@@ -44,19 +52,19 @@ class DummyContentWizard extends AbstractNode
             $action['html'] = $isRTE;
             $lang = $this->getRecordLanguage($this->data);
             // is this the right way to get an instance with requirejs?
-            $loremIpsum = "var loremIpsum = LoremIpsum(" . json_encode($action) . ", " . json_encode($lang) . "); ";
+            $loremIpsum = 'var loremIpsum = LoremIpsum(' . json_encode($action) . ', ' . json_encode($lang) . '); ';
             $dcwId = uniqid('dcw_');
-            $actionDcwEventListener = "";
+            $actionDcwEventListener = '';
 
             if ($isRTE) {
                 $itemName = $this->sanitizeFieldId($itemName);
-                $eventListenerHandlerName = "eventListenerRteHandler";
+                $eventListenerHandlerName = 'eventListenerRteHandler';
             } else {
-                $eventListenerHandlerName = "eventListenerHandler";
+                $eventListenerHandlerName = 'eventListenerHandler';
             }
             $actionDcwEventListener = "document.getElementById('" . $dcwId . "').addEventListener('click', function() {";
             $actionDcwEventListener .= "var itemname = this.attributes['data-target'].value;";
-            $actionDcwEventListener .= $eventListenerHandlerName . "(itemname, '" . json_encode($action) . "', " . json_encode($lang) . ");});";
+            $actionDcwEventListener .= $eventListenerHandlerName . "(itemname, '" . json_encode($action) . "', " . json_encode($lang) . ');});';
 
             // every button gets its own unique id (dcw -> "Dummy Content Wizard")
             $html[] = '<button id="' . $dcwId . '" type="button" class="btn btn-info" data-target="' . $itemName . '">' . htmlspecialchars($title) . '</button>';
@@ -71,11 +79,10 @@ class DummyContentWizard extends AbstractNode
             JavaScriptModuleInstruction::create('@colorcube/dummy_content/LoremIpsum.js');
 
         \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\AssetCollector::class)
-            ->addInlineJavaScript ('dcwEventListenerJS_' . uniqid('dcwjs_'), $dcwEventListenerJS, [ 'nonce' => $this->getNonceAttribute(), 'data-dcw' => $dcwId ]);
+            ->addInlineJavaScript('dcwEventListenerJS_' . uniqid('dcwjs_'), $dcwEventListenerJS, [ 'nonce' => $this->getNonceAttribute(), 'data-dcw' => $dcwId ]);
 
         return $result;
     }
-
 
     /**
      * Returns a the request object of the current context
@@ -95,7 +102,7 @@ class DummyContentWizard extends AbstractNode
     protected function getNonceAttribute()
     {
         $request = $this->getRequest();
-        $nonce = "";
+        $nonce = '';
         $nonceAttribute = $request->getAttribute('nonce');
         if ($nonceAttribute instanceof ConsumableString) {
             return $nonceAttribute;
@@ -123,7 +130,6 @@ class DummyContentWizard extends AbstractNode
         return 'en';
     }
 
-
     /**
      * @param string $itemFormElementName
      * @return string
@@ -150,4 +156,3 @@ class DummyContentWizard extends AbstractNode
         return $GLOBALS['BE_USER'];
     }
 }
-
