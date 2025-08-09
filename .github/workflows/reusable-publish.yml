@@ -65,11 +65,15 @@ jobs:
           echo "TYPO3_EXTENSION_KEY=$(composer config extra.typo3/cms.extension-key)" >> $GITHUB_ENV
 
       - name: Set extension version
-        run: php ~/.composer/vendor/bin/tailor set-version --no-docs -- ${{env.T3EXT_VERSION}}
+        env:
+          T3EXT_VERSION: ${{ env.T3EXT_VERSION }} 
+        run: php ~/.composer/vendor/bin/tailor set-version --no-docs -- ${{ env.T3EXT_VERSION }}
 
       - name: Publish to TER
         env:
           TYPO3_EXCLUDE_FROM_PACKAGING: TailorExcludeFromPackaging.php
+          GIT_TAG: ${{ env.GIT_TAG }}
+          T3EXT_VERSION: ${{ env.T3EXT_VERSION }} 
         run: |
           # upload using given tag annotations if some were given
           git tag -n10 -l ${INPUT_GITHUBREF} | sed 's/^[0-9.]*[ ]*//g' > RELEASE_NOTES
@@ -77,12 +81,12 @@ jobs:
             # otherwise upload using reference to Github release
             echo "Updated extension to version ${T3EXT_VERSION}" > RELEASE_NOTES
             echo $'\nDetails see Github release notes:' >> RELEASE_NOTES
-            echo "https://github.com/${{ github.repository }}/releases/tag/${{env.GIT_TAG}}" >> RELEASE_NOTES
+            echo "https://github.com/${{ github.repository }}/releases/tag/${{ env.GIT_TAG }}" >> RELEASE_NOTES
           fi
           cat RELEASE_NOTES
-          php ~/.composer/vendor/bin/tailor ter:publish --comment "$(cat RELEASE_NOTES)" ${{env.T3EXT_VERSION}}
+          php ~/.composer/vendor/bin/tailor ter:publish --comment "$(cat RELEASE_NOTES)" ${{ env.T3EXT_VERSION }}
 
-doxygen:
+  doxygen:
     name: Update Doxygen content on Github pages
     runs-on: ubuntu-latest
 
