@@ -78,8 +78,9 @@ class DummyContentWizard extends AbstractNode
         $result['javaScriptModules'][] =
             JavaScriptModuleInstruction::create('@colorcube/dummy_content/LoremIpsum.js');
 
+        $dcwJsId = uniqid('dcwjs_');
         \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\AssetCollector::class)
-            ->addInlineJavaScript('dcwEventListenerJS_' . uniqid('dcwjs_'), $dcwEventListenerJS, [ 'nonce' => $this->getNonceAttribute(), 'data-dcw' => $dcwId ]);
+            ->addInlineJavaScript('dcwEventListenerJS_' . $dcwJsId, $dcwEventListenerJS, [ 'nonce' => $this->getNonceAttribute(), 'data-dcw' => $dcwJsId ]);
 
         return $result;
     }
@@ -97,9 +98,9 @@ class DummyContentWizard extends AbstractNode
     /**
      * Returns a new nonce attribute value
      *
-     * @return ConsumableString
+     * @return ConsumableString or null
      */
-    protected function getNonceAttribute()
+    protected function getNonceAttribute() : ?ConsumableString
     {
         $request = $this->getRequest();
         $nonce = '';
@@ -107,7 +108,7 @@ class DummyContentWizard extends AbstractNode
         if ($nonceAttribute instanceof ConsumableString) {
             return $nonceAttribute;
         } else {
-            return $nonceAttribute;
+            return null;
         }
     }
 
@@ -124,7 +125,7 @@ class DummyContentWizard extends AbstractNode
         try {
             $site = GeneralUtility::makeInstance(SiteMatcher::class)->matchByPageId((int)$data['databaseRow']['pid']);
             $siteLanguage = $site->getLanguageById((int)($data['databaseRow']['sys_language_uid'][0] ?? 0));
-            return $siteLanguage->getLocale()->getLanguageCode() ?? 'en';
+            return $siteLanguage->getLocale()->getLanguageCode();
         } catch (\Exception $e) {
         }
         return 'en';
