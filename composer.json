@@ -47,7 +47,8 @@
         "overtrue/phplint": "*",
         "phpstan/extension-installer": "*",
         "phpunit/phpunit": "*",
-        "saschaegerer/phpstan-typo3": "*"
+        "saschaegerer/phpstan-typo3": "*",
+        "typo3/tailor": "^1.7"
     },
     "replace": {
         "typo3-ter/dummy-content": "self.version"

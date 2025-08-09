@@ -68,6 +68,8 @@ jobs:
         run: php ~/.composer/vendor/bin/tailor set-version --no-docs -- ${{env.T3EXT_VERSION}}
 
       - name: Publish to TER
+        env:
+          TYPO3_EXCLUDE_FROM_PACKAGING: TailorExcludeFromPackaging.php
         run: |
           # upload using given tag annotations if some were given
           git tag -n10 -l ${INPUT_GITHUBREF} | sed 's/^[0-9.]*[ ]*//g' > RELEASE_NOTES
@@ -79,7 +81,8 @@ jobs:
           fi
           cat RELEASE_NOTES
           php ~/.composer/vendor/bin/tailor ter:publish --comment "$(cat RELEASE_NOTES)" ${{env.T3EXT_VERSION}}
-  doxygen:
+
+doxygen:
     name: Update Doxygen content on Github pages
     runs-on: ubuntu-latest
 
