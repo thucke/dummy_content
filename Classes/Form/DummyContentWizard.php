@@ -100,7 +100,7 @@ class DummyContentWizard extends AbstractNode
      *
      * @return ConsumableString or null
      */
-    protected function getNonceAttribute() : ?ConsumableString
+    protected function getNonceAttribute(): ?ConsumableString
     {
         $request = $this->getRequest();
         $nonce = '';

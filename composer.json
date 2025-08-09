@@ -47,9 +47,9 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "*",
         "jangregor/phpstan-prophecy": "*",
-        "overtrue/phplint": "^9.6",
+        "overtrue/phplint": "*",
         "phpstan/extension-installer": "*",
-        "phpunit/phpunit": "^12.3",
+        "phpunit/phpunit": "*",
         "saschaegerer/phpstan-typo3": "*"
     },
     "replace": {
