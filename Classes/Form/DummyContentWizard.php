@@ -103,10 +103,13 @@ class DummyContentWizard extends AbstractNode
     protected function getNonceAttribute(): ?ConsumableString
     {
         $request = $this->getRequest();
-        $nonce = '';
-        $nonceAttribute = $request->getAttribute('nonce');
-        if ($nonceAttribute instanceof ConsumableString) {
-            return $nonceAttribute;
+
+        // Get all available attributes
+        $allAttributes = $request->getAttributes();
+
+        if (isset($allAttributes['nonce']) && $allAttributes['nonce'] instanceof ConsumableString) {
+            // If nonce is already set, return it
+            return $allAttributes['nonce'];
         } else {
             return null;
         }
