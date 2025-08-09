@@ -28,9 +28,6 @@
     "config": {
       "sort-packages": true,
       "optimize-autoloader": true,
-      "platform": {
-        "php": "8.3"
-      },
       "allow-plugins": {
         "helhum/dotenv-connector": true,
         "typo3/class-alias-loader": true,
