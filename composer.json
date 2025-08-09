@@ -72,16 +72,16 @@
     },
     "scripts": {
       "test:php:lint": [
-        "phplint"
+        "vendor/bin/phplint"
       ],
       "test:cgl": [
-        "php-cs-fixer --using-cache=yes --diff -vvv fix Classes"
+        "vendor/bin/php-cs-fixer --using-cache=yes --diff -vvv fix Classes"
       ],
       "test:phpstan:classes": [
         "TYPO3_CONTEXT=Development; phpstan analyse Classes"
       ],
       "test:phpstan:tests": [
-        "phpstan analyze Tests"
+        "vendor/bin/phpstan analyze Tests"
       ],
       "pre-autoload-dump": [
         "mkdir -pv var/log"
