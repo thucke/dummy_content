@@ -48,7 +48,7 @@
         "phpstan/extension-installer": "*",
         "phpunit/phpunit": "*",
         "saschaegerer/phpstan-typo3": "*",
-        "typo3/tailor": "^1.7"
+        "typo3/tailor": "*"
     },
     "replace": {
         "typo3-ter/dummy-content": "self.version"

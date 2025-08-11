@@ -57,9 +57,6 @@ jobs:
           extensions: intl, mbstring, json, zip, curl
           tools: composer:v2
 
-      - name: Install tailor
-        run: composer global require typo3/tailor --prefer-dist --no-progress --no-suggest
-
       - name: Set TYPO3_EXTENSION_KEY from file
         run: |
           echo "TYPO3_EXTENSION_KEY=$(composer config extra.typo3/cms.extension-key)" >> $GITHUB_ENV
@@ -67,7 +64,7 @@ jobs:
       - name: Set extension version
         env:
           T3EXT_VERSION: ${{ env.T3EXT_VERSION }} 
-        run: php ~/.composer/vendor/bin/tailor set-version --no-docs -- ${{ env.T3EXT_VERSION }}
+        run: vendor/bin/tailor set-version --no-docs -- ${{ env.T3EXT_VERSION }}
 
       - name: Publish to TER
         env:
@@ -84,7 +81,7 @@ jobs:
             echo "https://github.com/${{ github.repository }}/releases/tag/${{ env.GIT_TAG }}" >> RELEASE_NOTES
           fi
           cat RELEASE_NOTES
-          php ~/.composer/vendor/bin/tailor ter:publish --comment "$(cat RELEASE_NOTES)" ${{ env.T3EXT_VERSION }}
+          vendor/bin/tailor ter:publish --comment "$(cat RELEASE_NOTES)" ${{ env.T3EXT_VERSION }}
 
   doxygen:
     name: Update Doxygen content on Github pages
